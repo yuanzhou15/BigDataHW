@@ -1,3 +1,4 @@
+sc
 NYC_REST = 'nyc_restaurants.csv'
 rest = sc.textFile(NYC_REST, use_unicode=False).cache()
 rest.take(3)
@@ -16,4 +17,7 @@ def extractCuisine(partId, list_of_records):
 allCuisines = rest.mapPartitionsWithIndex(extractCuisine)
 allCuisines.take(10)
 
-allCuisines.map(lambda x: (x, 1)).reduceByKey(lambda x, y: x + y).collect()
+file = open("output.txt", "w")
+for k in allCuisines.map(lambda x: (x, 1)).reduceByKey(lambda x, y: x + y).collect():
+    file.write(str(k) + "\n")
+file.close()
